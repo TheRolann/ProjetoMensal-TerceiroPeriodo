@@ -17,8 +17,7 @@ public class FuncionarioRepository implements Crud<Funcionario> {
     }
 
     @Override
-    public void excluir(Funcionario funcionario) {
-        funcionarios.remove(funcionario);
+    public void excluir(int id) {
     }
 
     @Override

@@ -8,7 +8,6 @@ import java.util.List;
 
 public class ClienteRepository implements Crud<Cliente>{
     // Crianco o "banco de dados" em memoria
-
     // Criando a List do tipo Cliente
     private List<Cliente> clientes = new ArrayList<>();
 
@@ -18,8 +17,11 @@ public class ClienteRepository implements Crud<Cliente>{
     }
 
     @Override
-    public void excluir(Cliente cliente) {
-        clientes.remove(cliente);
+    public void excluir(int id) {
+        Cliente cliente = buscarPorId(id);
+        if (cliente != null) {
+            clientes.remove(cliente);
+        }
     }
 
     @Override

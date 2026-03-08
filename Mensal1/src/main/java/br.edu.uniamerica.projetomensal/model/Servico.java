@@ -1,5 +1,7 @@
 package br.edu.uniamerica.projetomensal.model;
 
+import br.edu.uniamerica.projetomensal.model.enums.Status;
+
 public class Servico {
 
     private int id;
@@ -8,10 +10,10 @@ public class Servico {
     private String data = "";
     private double valor;
     private int clienteID;
-    private String status;
+    private Status status;
 
     public Servico(int id, String nomeServico, String descricao, String data,
-                   double valor, int clienteID, String status){
+                   double valor, int clienteID, Status status){
         this.id = id;
         this.nomeServico = nomeServico;
         this.descricao = descricao;
@@ -69,11 +71,11 @@ public class Servico {
         this.clienteID = clienteID;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 }

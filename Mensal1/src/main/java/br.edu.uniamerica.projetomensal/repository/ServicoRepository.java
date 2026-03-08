@@ -6,16 +6,19 @@ import br.edu.uniamerica.projetomensal.interfaces.Crud;
 import br.edu.uniamerica.projetomensal.model.Servico;
 
 public class ServicoRepository implements Crud<Servico>{
-    private List<Servico> lista = new ArrayList<>();
+    private List<Servico> servicos = new ArrayList<>();
 
     @Override
     public void salvar(Servico servico) {
-        lista.add(servico);
+        servicos.add(servico);
     }
 
     @Override
-    public void excluir(Servico servico) {
-        lista.remove(servico);
+    public void excluir(int id) {
+        Servico servico = buscarPorId(id);
+        if (servico != null) {
+            servicos.remove(servico);
+        }
     }
 
     @Override
@@ -23,7 +26,7 @@ public class ServicoRepository implements Crud<Servico>{
 
     @Override
     public Servico buscarPorId(int id) {
-        for(Servico servico : lista) {
+        for(Servico servico : servicos) {
             if (servico.getId() == id) {
                 return servico;
             }
@@ -32,6 +35,6 @@ public class ServicoRepository implements Crud<Servico>{
     }
 
     public List<Servico> listar() {
-        return lista;
+        return servicos;
     }
 }

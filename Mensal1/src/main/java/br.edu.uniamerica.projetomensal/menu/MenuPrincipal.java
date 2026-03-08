@@ -1,7 +1,51 @@
 package br.edu.uniamerica.projetomensal.menu;
 
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class MenuPrincipal {
+    Scanner sc = new Scanner(System.in);
 
+    ClienteMenu clienteMenu = new ClienteMenu();
+    FuncionarioMenu funcionarioMenu = new FuncionarioMenu();
+    RelatorioMenu relatorioMenu = new RelatorioMenu();
+    ServicoMenu servicoMenu = new ServicoMenu();
+
+    public void iniciar() {
+        int opcao;
+
+        do {
+            System.out.println("________________________________________");
+            System.out.println("| === === SISTEMA DETETIZADORA === === |");
+            System.out.println("| -- --- --- Menu Principal --- --- -- |");
+            System.out.println("| 1 - Clientes                         |");
+            System.out.println("| 2 - Funcionarios                     |");
+            System.out.println("| 3 - Servicos                         |");
+            System.out.println("| 4 - Relatorios                       |");
+            System.out.println("| 0 - Sair                             |");
+            System.out.println("----------------------------------------");
+            opcao = sc.nextInt();
+
+            switch (opcao) {
+                case 1:
+                    clienteMenu.iniciar();
+                    break;
+                case 2:
+                    // funcionarioMenu.iniciar();
+                    break;
+                case 3:
+                    servicoMenu.iniciar();
+                    break;
+                case 4:
+                    // relatorioMenu.iniciar();
+                    break;
+                case 0:
+                    System.out.println("Saindo do sistema...");
+                    break;
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
+            }
+
+        } while (opcao != 0);
+    }
 }

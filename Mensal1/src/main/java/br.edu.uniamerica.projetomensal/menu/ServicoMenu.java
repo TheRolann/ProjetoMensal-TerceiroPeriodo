@@ -1,141 +1,156 @@
 package br.edu.uniamerica.projetomensal.menu;
 
 import br.edu.uniamerica.projetomensal.model.Servico;
+import br.edu.uniamerica.projetomensal.model.enums.Status;
 import br.edu.uniamerica.projetomensal.service.ServicoService;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class ServicoMenu {
 
     private ServicoService servicoService = new ServicoService();
-
     // Scanner para entrada de dados
-    Scanner s = new Scanner(System.in);
+    Scanner sc = new Scanner(System.in);
 
-    void menuServicoPrincipal(){
-        System.out.println("=== GERENCIAR SERVIÇOS ===\n");
-        System.out.println("1 - Cadastrar Serviço\n");
-        System.out.println("2 - Listar Serviços\n");
-        System.out.println("3 - Atualizar Serviço\n");
-        System.out.println("4 - Remover Serviço\n");
-        System.out.println("0 - Voltar\n");
-        System.out.println("Escolha uma opção:  ");
+    int opcao;
 
-    }
+    public void iniciar() {
 
-    void cadastrarServico(){
-        System.out.println("=== Cadastro de Serviço ===\n");
-        System.out.println("Tipo de Serviço: ");
-        String nome = s.nextLine();
-        System.out.println("Descrição: ");
-        String descricao = s.nextLine();
-        System.out.println("Data Agendada (dd/mm/aaaa): ");
-        String data = s.nextLine();
-        System.out.println("Valor: ");
-        double valor = Double.parseDouble(s.nextLine());
-        System.out.println("ID do Cliente: ");
-        int clienteID = Integer.parseInt(s.nextLine());
-        System.out.println("Status: (Agendado / Em andamento / Concluído): ");
-        String status = s.nextLine();
-
-        servicoService.cadastrar(nome, descricao, data, valor, clienteID, status);
-        System.out.println("=== Serviço cadastrado com sucesso! ===");
-    }
-
-    void atualizarServico(){
-        System.out.println("=== Atualizar Serviço ===");
-        System.out.println("Informe o ID do serviço: ");
-        int servicoID = Integer.parseInt(s.nextLine());
-        Servico tipoServico = servicoService.buscarPorId(servicoID);
-        if (tipoServico == null){
-            System.out.println("Serviço não encontrado.");
-            System.out.println("=== Retornando ao menu... ===");
-            return;
-        }
-        System.out.println("Serviço encontrado!");
-        System.out.println("Tipo atual: " + tipoServico.getNomeServico());
-        System.out.println("Novo Tipo (ENTER para manter):");
-        String nome = s.nextLine();
-        if (!nome.isEmpty()){
-            tipoServico.setNomeServico(nome);
-        }
-
-        System.out.println("Descrição atual: " + tipoServico.getDescricao());
-        System.out.println("Nova Descrição (ENTER para manter):");
-        String descricao = s.nextLine();
-        if (!descricao.isEmpty()){
-            tipoServico.setDescricao(descricao);
-        }
-        System.out.println("Data atual: " + tipoServico.getData());
-        System.out.println("Nova Data (ENTER para manter):");
-        String data = s.nextLine();
-        if (!data.isEmpty()){
-            tipoServico.setData(data);
-        }
-        System.out.println("Valor atual: " + tipoServico.getValor());
-        System.out.println("Novo Valor (ENTER para manter):");
-        String valor = s.nextLine();
-        if (!valor.isEmpty()){
-            tipoServico.setValor(Double.parseDouble(valor));
-        }
-        System.out.println("Status atual: " + tipoServico.getStatus());
-        System.out.println("Novo Status (Agendado / Em andamento / Concluído):");
-        String status = s.nextLine();
-        if (!status.isEmpty()){
-            tipoServico.setStatus(status);
-        }
-        System.out.println("=== Serviço atualizado com sucesso! ===");
-
-    }
-
-    void removerServico(){
-        System.out.println("Informe o ID do serviço: ");
-        int servicoID = Integer.parseInt(s.nextLine());
-        Servico servico = servicoService.buscarPorId(servicoID);
-
-        if (servico == null){
-            System.out.println("Serviço não encontrado.");
-            System.out.println("=== Retornando ao menu... ===");
-            return;
-        }
-
-        System.out.println("Serviço encontrado:");
-        System.out.println("Tipo: " + servico.getNomeServico());
-        System.out.println("Data: " + servico.getData());
-        System.out.println("Cliente ID: " + servico.getClienteID());
-        System.out.println("Tem certeza que deseja remover? (S/N): ");
-        String confirmacao = s.nextLine();
-
-        if (confirmacao.equalsIgnoreCase("S")){
-            servicoService.excluir(servicoID);
-            System.out.println("=== Serviço removido com sucesso! ===");
-        }else{
-            System.out.println("Operação cancelada.");
-        }
-
-    }
-    public void menuServicos() {
-        int opcao = 10;
         do {
-            menuServicoPrincipal();
-            opcao = Integer.parseInt(s.nextLine());
+            System.out.println("________________________________________");
+            System.out.println("| === === SISTEMA DETETIZADORA === === |");
+            System.out.println("|  -- --- --- Menu Servico --- --- --  |");
+            System.out.println("| 1 - Cadastar                         |");
+            System.out.println("| 2 - Editar                           |");
+            System.out.println("| 3 - Apagar                           |");
+            System.out.println("| 4 - Listar                           |");
+            System.out.println("| 0 - Voltar                           |");
+            System.out.println("----------------------------------------");
+            opcao = Integer.parseInt(sc.nextLine());
+
             switch (opcao) {
                 case 1:
                     cadastrarServico();
                     break;
                 case 2:
-                    servicoService.listar();
+                    editarServico();
                     break;
                 case 3:
-                    atualizarServico();
+                    excluirServico();
                     break;
                 case 4:
-                    removerServico();
+                    listarServico();
+                    break;
+                case 0:
+                    System.out.println("Voltando ao menu principal...");
                     break;
                 default:
-                    System.out.println("Encerrando o sistema!");
-                    break;
+                    System.out.println("Opção inválida. Tente novamente.");
             }
+
         } while (opcao != 0);
+    }
+
+    void cadastrarServico() {
+        System.out.println("|--------------------------------------|");
+        System.out.println("|  --- --- Cadastro de Servico --- --- |");
+        System.out.println("|--------------------------------------|");
+        System.out.print("| Nome do Servico: ");
+        String nomeServico = sc.nextLine();
+        System.out.print("| Descrição do Servico (RESUMA): ");
+        String descricao = sc.nextLine();
+        System.out.print("| Data Agendada (DD/MM/AAAA): ");
+        String data = sc.nextLine();
+        System.out.print("| Valor do Servico: R$ ");
+        double valor = Double.parseDouble(sc.nextLine().replace(",", "."));
+        System.out.print("| ID do Cliente: ");
+        int clienteID = Integer.parseInt(sc.nextLine());
+        System.out.print("| Status do Servico (ATIVO/INATIVO): ");
+        String statusInput = sc.nextLine();
+        Status status = Status.valueOf(statusInput.toUpperCase());
+
+        servicoService.cadastrar(nomeServico, descricao, data, valor, clienteID, status);
+        System.out.println("| Servico cadastrado com sucesso!       |");
+        System.out.println("|---------------------------------------|");
+    }
+
+    void listarServico() {
+        List<Servico> servicos = servicoService.listar();
+
+        System.out.println("|--------------------------------------|");
+        System.out.println("|  --- --- Lista de Servicos --- ---   |");
+        System.out.println("|--------------------------------------|");
+
+        for (Servico c : servicos) {
+            System.out.println("|--------------------------------------|");
+            System.out.println("| ID: " + c.getId() + "\t |");
+            System.out.println("| Nome do Servico: " + c.getNomeServico() + "\t |");
+            System.out.println("| Descricao: " + c.getDescricao() + "\t |");
+            System.out.println("| Data: " + c.getData() + "\t |");
+            System.out.println("| Valor: R$ " + c.getValor() + "\t |");
+            System.out.println("| ID do Cliente: " + c.getClienteID() + "\t |");
+            System.out.println("| Status: " + c.getStatus() + "\t |");
+            System.out.println("|--------------------------------------|");
+        }
+    }
+
+    void excluirServico() {
+        System.out.println("|--------------------------------------|");
+        System.out.println("|    --- --- Excluir Servico --- ---   |");
+        System.out.println("|--------------------------------------|");
+        System.out.println("| Informe o ID do servico: ");
+        int id = Integer.parseInt(sc.nextLine());
+        servicoService.excluir(id);
+        System.out.println("| Servico excluido com sucesso!         |");
+        System.out.println("|---------------------------------------|");
+    }
+
+    void editarServico() {
+        System.out.println("|--------------------------------------|");
+        System.out.println("|    --- --- Editar Servico --- ---    |");
+        System.out.println("|--------------------------------------|");
+        System.out.println("| Informe o ID do servico: ");
+        int id = Integer.parseInt(sc.nextLine());
+        Servico servico = servicoService.buscarPorId(id);
+
+        if(servico == null) {
+            System.out.println("| ERRO! Servico nao encontrado.        |");
+            System.out.println("|--------------------------------------|");
+            return;
+        }
+
+        System.out.println("| Servico encontrado!                   |");
+        System.out.println("| Nome do servico atual: " + servico.getNomeServico());
+        System.out.println("| Novo nome do servico (ENTER para manter): ");
+        String nomeServico = sc.nextLine();
+        if (!nomeServico.isEmpty()) {
+            servico.setNomeServico(nomeServico);
+        }
+        System.out.println("| Data atual: " + servico.getData());
+        System.out.println("| Nova data (ENTER para manter): ");
+        String data = sc.nextLine();
+        if (!data.isEmpty()) {
+            servico.setData(data);
+        }
+        System.out.println("| Valor atual: R$ " + servico.getValor());
+        System.out.println("| Novo valor (ENTER para manter): ");
+        double valor = sc.nextDouble();
+        if (valor != 0 && valor != servico.getValor() && valor > 0) {
+            servico.setValor(valor);
+        } else if (valor < 0) {
+            System.out.println("| Valor invalido. Mantendo valor atual. |");
+        }
+
+        System.out.println("| Status atual: " + servico.getStatus());
+        System.out.println("| Novo Status (ATIVO/INATIVO) (ENTER para manter): ");
+        String statusInput = sc.nextLine();
+        if (!statusInput.isEmpty()) {
+            Status status = Status.valueOf(statusInput.toUpperCase());
+            servico.setStatus(status);
+        }
+        servicoService.editar(servico);
+        System.out.println("| Servico atualizado com sucesso!       |");
+        System.out.println("|---------------------------------------|");
     }
 }
