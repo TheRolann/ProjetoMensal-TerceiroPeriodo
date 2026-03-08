@@ -1,6 +1,7 @@
 package br.edu.uniamerica.projetomensal.menu;
 
-import java.sql.SQLOutput;
+import br.edu.uniamerica.projetomensal.utils.InputUtils;
+
 import java.util.Scanner;
 
 public class MenuPrincipal {
@@ -24,7 +25,7 @@ public class MenuPrincipal {
             System.out.println("| 4 - Relatorios                       |");
             System.out.println("| 0 - Sair                             |");
             System.out.println("|--------------------------------------|");
-            opcao = sc.nextInt();
+            opcao = InputUtils.lerInt(sc, "Opcao: ");
 
             switch (opcao) {
                 case 1:
@@ -37,7 +38,7 @@ public class MenuPrincipal {
                     servicoMenu.iniciar();
                     break;
                 case 4:
-                    // relatorioMenu.iniciar();
+                    relatorioMenu.iniciar();
                     break;
                 case 0:
                     System.out.println("Saindo do sistema...");

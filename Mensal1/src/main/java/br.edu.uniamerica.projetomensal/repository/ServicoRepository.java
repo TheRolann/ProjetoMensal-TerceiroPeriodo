@@ -6,7 +6,7 @@ import br.edu.uniamerica.projetomensal.interfaces.Crud;
 import br.edu.uniamerica.projetomensal.model.Servico;
 
 public class ServicoRepository implements Crud<Servico>{
-    private List<Servico> servicos = new ArrayList<>();
+    private static List<Servico> servicos = new ArrayList<>();
 
     @Override
     public void salvar(Servico servico) {

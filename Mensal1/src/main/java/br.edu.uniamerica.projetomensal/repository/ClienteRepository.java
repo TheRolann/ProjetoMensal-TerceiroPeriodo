@@ -9,7 +9,7 @@ import java.util.List;
 public class ClienteRepository implements Crud<Cliente>{
     // Crianco o "banco de dados" em memoria
     // Criando a List do tipo Cliente
-    private List<Cliente> clientes = new ArrayList<>();
+    private static List<Cliente> clientes = new ArrayList<>();
 
     @Override
     public void salvar(Cliente cliente) {

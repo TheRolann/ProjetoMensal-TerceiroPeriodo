@@ -9,7 +9,7 @@ public class FuncionarioRepository implements Crud<Funcionario> {
     // Crianco o "banco de dados" em memoria
 
     // Criando a List do tipo Cliente
-    private List<Funcionario> funcionarios  = new ArrayList<>();
+    private static List<Funcionario> funcionarios  = new ArrayList<>();
 
     @Override
     public void salvar(Funcionario funcionario) {

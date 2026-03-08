@@ -3,6 +3,7 @@ package br.edu.uniamerica.projetomensal.menu;
 import br.edu.uniamerica.projetomensal.model.Servico;
 import br.edu.uniamerica.projetomensal.model.enums.Status;
 import br.edu.uniamerica.projetomensal.service.ServicoService;
+import br.edu.uniamerica.projetomensal.utils.InputUtils;
 
 import java.util.List;
 import java.util.Scanner;
@@ -26,7 +27,7 @@ public class ServicoMenu {
             System.out.println("| 4 - Listar                           |");
             System.out.println("| 0 - Voltar                           |");
             System.out.println("|--------------------------------------|");
-            opcao = Integer.parseInt(sc.nextLine());
+            opcao = InputUtils.lerInt(sc,"Opcao: ");
 
             switch (opcao) {
                 case 1:
@@ -55,20 +56,15 @@ public class ServicoMenu {
         System.out.println("\n|--------------------------------------|");
         System.out.println("|  --- --- Cadastro de Servico --- --- |");
         System.out.println("|--------------------------------------|");
-        System.out.print("| Nome do Servico: ");
-        String nomeServico = sc.nextLine();
-        System.out.print("| Descrição do Servico (RESUMA): ");
-        String descricao = sc.nextLine();
-        System.out.print("| Data Agendada (DD/MM/AAAA): ");
-        String data = sc.nextLine();
-        System.out.print("| Valor do Servico: R$ ");
-        double valor = Double.parseDouble(sc.nextLine().replace(",", "."));
-        System.out.print("| ID do Cliente: ");
-        int clienteID = Integer.parseInt(sc.nextLine());
+        String nomeServico = InputUtils.lerString(sc, "| Nome do Servico: ");
+        String descricao = InputUtils.lerString(sc, "| Descricao do Servico: ");
+        String data = InputUtils.lerString(sc, "| Data Agendada (DD/MM/AAAA): ");
+        double valor = InputUtils.lerDouble(sc, "| Valor do Servico: R$ ");
+        int clienteID = InputUtils.lerInt(sc, "| ID do Cliente: ");
         System.out.println("| Status do Servico ");
         System.out.println("| 1 - ATIVO\n| 2 - INATIVO\n| 3 - AGENDADO\n| 4 - EM ANDAMENTO\n| 5 - CONCLUIDO");
         System.out.print("| Informe o numero do status: ");
-        int statusInput = Integer.parseInt(sc.nextLine());
+        int statusInput = InputUtils.lerInt(sc, "");
         // Cria um array de Status do Enum e seleciona o status com base na entrada do usuario
         // ex: [ATIVO, INATIVO, AGENDADO, EM_ANDAMENTO, CONCLUIDO]
         Status status = Status.values()[statusInput - 1];
@@ -105,7 +101,7 @@ public class ServicoMenu {
         System.out.println("|    --- --- Excluir Servico --- ---   |");
         System.out.println("|--------------------------------------|");
         System.out.print("| Informe o ID do servico: ");
-        int id = Integer.parseInt(sc.nextLine());
+        int id = InputUtils.lerInt(sc, "");
         servicoService.excluir(id);
         System.out.println("|---------------------------------------|");
         System.out.println("| Servico excluido com sucesso!         |");
@@ -117,7 +113,7 @@ public class ServicoMenu {
         System.out.println("|    --- --- Editar Servico --- ---    |");
         System.out.println("|--------------------------------------|");
         System.out.print("| Informe o ID do servico: ");
-        int id = Integer.parseInt(sc.nextLine());
+        int id = InputUtils.lerInt(sc, "");
         Servico servico = servicoService.buscarPorId(id);
 
         if(servico == null) {
@@ -130,22 +126,22 @@ public class ServicoMenu {
         System.out.println("| Servico encontrado!                  |");
         System.out.println("| Nome do servico atual: " + servico.getNomeServico());
         System.out.print("| Novo nome do servico (ENTER para manter): ");
-        String nomeServico = sc.nextLine();
+        String nomeServico = InputUtils.lerString(sc, "");
         if (!nomeServico.isEmpty()) {
             servico.setNomeServico(nomeServico);
         }
         System.out.println("| Data atual: " + servico.getData());
         System.out.print("| Nova data (ENTER para manter): ");
-        String data = sc.nextLine();
+        String data = InputUtils.lerString(sc, "");
         if (!data.isEmpty()) {
             servico.setData(data);
         }
         System.out.println("| Valor atual: R$ " + servico.getValor());
         System.out.print("| Novo valor (ENTER para manter): R$ ");
-        double valor = Double.parseDouble(sc.nextLine());
+        double valor = InputUtils.lerDouble(sc, "");
         if (valor != 0 && valor != servico.getValor() && valor > 0) {
             servico.setValor(valor);
-        } else if (valor < 0) {
+        } else if (valor < 0 || valor == servico.getValor()) {
             System.out.println("| Valor invalido. Mantendo valor atual. |");
         }
 
@@ -153,7 +149,7 @@ public class ServicoMenu {
         System.out.println("| Novo Status");
         System.out.println("| 1 - ATIVO\n| 2 - INATIVO\n| 3 - AGENDADO\n| 4 - EM ANDAMENTO\n| 5 - CONCLUIDO");
         System.out.print("| Informe o numero do status (ENTER para manter): ");
-        int statusInput = Integer.parseInt(sc.nextLine());
+        int statusInput = InputUtils.lerInt(sc, "");
         if (statusInput > 0 && statusInput <= Status.values().length) {
             Status status = Status.values()[statusInput - 1];
             servico.setStatus(status);
