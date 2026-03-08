@@ -12,10 +12,11 @@ public class ServicoService implements Crud<Servico> {
     private ServicoRepository repository = new ServicoRepository();
     private int proximoId = 1;
 
-    public void cadastrar(String nomeServico, String descricao, String data, double valor, int clienteID, Status status) {
+    public Servico cadastrar(String nomeServico, String descricao, String data, double valor, int clienteID, Status status) {
         Servico servico = new Servico(proximoId++, nomeServico, descricao, data, valor, clienteID, status);
-
         salvar(servico);
+
+        return servico;
     }
 
     @Override
@@ -30,7 +31,7 @@ public class ServicoService implements Crud<Servico> {
 
     @Override
     public void editar(Servico servico) {
-        Servico servicoExistente = buscarPorId(proximoId);
+        Servico servicoExistente = buscarPorId(servico.getId());
 
         if (servicoExistente != null) {
             servicoExistente.setNomeServico(servico.getNomeServico());

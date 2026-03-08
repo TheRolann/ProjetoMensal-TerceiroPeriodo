@@ -15,7 +15,7 @@ public class MenuPrincipal {
         int opcao;
 
         do {
-            System.out.println("________________________________________");
+            System.out.println("|--------------------------------------|");
             System.out.println("| === === SISTEMA DETETIZADORA === === |");
             System.out.println("| -- --- --- Menu Principal --- --- -- |");
             System.out.println("| 1 - Clientes                         |");
@@ -23,7 +23,7 @@ public class MenuPrincipal {
             System.out.println("| 3 - Servicos                         |");
             System.out.println("| 4 - Relatorios                       |");
             System.out.println("| 0 - Sair                             |");
-            System.out.println("----------------------------------------");
+            System.out.println("|--------------------------------------|");
             opcao = sc.nextInt();
 
             switch (opcao) {

@@ -12,10 +12,11 @@ public class ClienteService implements Crud<Cliente> {
     private ClienteRepository repository = new ClienteRepository();
     private int proximoId = 1;
 
-    public void cadastrarCliente(String nomeEmpresa, String cnpj, String cpf, String endereco, String telefone, String email, Status status) {
-        Cliente cliente = new Cliente(proximoId++, nomeEmpresa, cnpj, cpf, endereco, telefone, email, status);
-
+    public Cliente cadastrarCliente(String nomeEmpresa, String documento, String endereco, String telefone, String email, Status status) {
+        Cliente cliente = new Cliente(proximoId++, nomeEmpresa, documento, endereco, telefone, email, status);
         salvar(cliente);
+
+        return  cliente;
     }
 
     @Override
@@ -34,8 +35,7 @@ public class ClienteService implements Crud<Cliente> {
 
         if (clienteExistente != null) {
             clienteExistente.setNomeEmpresa(cliente.getNomeEmpresa());
-            clienteExistente.setCnpj(cliente.getCnpj());
-            clienteExistente.setCpf(cliente.getCpf());
+            clienteExistente.setDocumento(cliente.getDocumento());
             clienteExistente.setEndereco(cliente.getEndereco());
             clienteExistente.setTelefone(cliente.getTelefone());
             clienteExistente.setEmail(cliente.getEmail());
@@ -52,5 +52,4 @@ public class ClienteService implements Crud<Cliente> {
     public List<Cliente> listar() {
         return repository.listar();
     }
-
 }

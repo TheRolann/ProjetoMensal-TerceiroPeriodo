@@ -6,19 +6,17 @@ public class Cliente {
     // Atributos
     private int id;
     private String nomeEmpresa;
-    private String cnpj;
-    private String cpf;
+    private String documento; // Pode ser CNPJ ou CPF
     private String endereco;
     private String telefone;
     private String email;
     private Status status;
 
     // Construtor
-    public Cliente(int id, String nomeEmpresa, String cnpj, String cpf, String endereco, String telefone, String email, Status status) {
+    public Cliente(int id, String nomeEmpresa, String documento, String endereco, String telefone, String email, Status status) {
         this.id = id;
         this.nomeEmpresa = nomeEmpresa;
-        this.cnpj = cnpj;
-        this.cpf = cpf;
+        this.documento = documento;
         this.endereco = endereco;
         this.telefone = telefone;
         this.email = email;
@@ -32,11 +30,8 @@ public class Cliente {
     public String getNomeEmpresa() { return nomeEmpresa; }
     public void setNomeEmpresa(String nomeEmpresa) { this.nomeEmpresa = nomeEmpresa; }
 
-    public String getCnpj() { return cnpj; }
-    public void setCnpj(String cnpj) { this.cnpj = cnpj; }
-
-    public String getCpf() { return cpf; }
-    public void setCpf(String cpf) { this.cpf = cpf; }
+    public String getDocumento() { return documento; }
+    public void setDocumento(String documento) { this.documento = documento; }
 
     public String getEndereco() { return endereco; }
     public void  setEndereco (String endereco) { this.endereco = endereco; }
@@ -49,6 +44,5 @@ public class Cliente {
 
     public Status getStatus() { return status; }
     public void setStatus(Status status) { this.status = status; }
-
 }
 

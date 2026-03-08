@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ServicoMenu {
-
     private ServicoService servicoService = new ServicoService();
     // Scanner para entrada de dados
     Scanner sc = new Scanner(System.in);
@@ -18,7 +17,7 @@ public class ServicoMenu {
     public void iniciar() {
 
         do {
-            System.out.println("________________________________________");
+            System.out.println("\n|--------------------------------------|");
             System.out.println("| === === SISTEMA DETETIZADORA === === |");
             System.out.println("|  -- --- --- Menu Servico --- --- --  |");
             System.out.println("| 1 - Cadastar                         |");
@@ -26,7 +25,7 @@ public class ServicoMenu {
             System.out.println("| 3 - Apagar                           |");
             System.out.println("| 4 - Listar                           |");
             System.out.println("| 0 - Voltar                           |");
-            System.out.println("----------------------------------------");
+            System.out.println("|--------------------------------------|");
             opcao = Integer.parseInt(sc.nextLine());
 
             switch (opcao) {
@@ -53,7 +52,7 @@ public class ServicoMenu {
     }
 
     void cadastrarServico() {
-        System.out.println("|--------------------------------------|");
+        System.out.println("\n|--------------------------------------|");
         System.out.println("|  --- --- Cadastro de Servico --- --- |");
         System.out.println("|--------------------------------------|");
         System.out.print("| Nome do Servico: ");
@@ -66,24 +65,30 @@ public class ServicoMenu {
         double valor = Double.parseDouble(sc.nextLine().replace(",", "."));
         System.out.print("| ID do Cliente: ");
         int clienteID = Integer.parseInt(sc.nextLine());
-        System.out.print("| Status do Servico (ATIVO/INATIVO): ");
-        String statusInput = sc.nextLine();
-        Status status = Status.valueOf(statusInput.toUpperCase());
+        System.out.println("| Status do Servico ");
+        System.out.println("| 1 - ATIVO\n| 2 - INATIVO\n| 3 - AGENDADO\n| 4 - EM ANDAMENTO\n| 5 - CONCLUIDO");
+        System.out.print("| Informe o numero do status: ");
+        int statusInput = Integer.parseInt(sc.nextLine());
+        // Cria um array de Status do Enum e seleciona o status com base na entrada do usuario
+        // ex: [ATIVO, INATIVO, AGENDADO, EM_ANDAMENTO, CONCLUIDO]
+        Status status = Status.values()[statusInput - 1];
 
-        servicoService.cadastrar(nomeServico, descricao, data, valor, clienteID, status);
+        Servico servico = servicoService.cadastrar(nomeServico, descricao, data, valor, clienteID, status);
+        System.out.println("\n|---------------------------------------|");
         System.out.println("| Servico cadastrado com sucesso!       |");
+        System.out.println("| ID do Servico: " + servico.getId() + "        \t\t|");
         System.out.println("|---------------------------------------|");
     }
 
     void listarServico() {
         List<Servico> servicos = servicoService.listar();
 
-        System.out.println("|--------------------------------------|");
+        System.out.println("\n|--------------------------------------|");
         System.out.println("|  --- --- Lista de Servicos --- ---   |");
         System.out.println("|--------------------------------------|");
 
         for (Servico c : servicos) {
-            System.out.println("|--------------------------------------|");
+            System.out.println("\n|--------------------------------------|");
             System.out.println("| ID: " + c.getId() + "\t |");
             System.out.println("| Nome do Servico: " + c.getNomeServico() + "\t |");
             System.out.println("| Descricao: " + c.getDescricao() + "\t |");
@@ -96,46 +101,48 @@ public class ServicoMenu {
     }
 
     void excluirServico() {
-        System.out.println("|--------------------------------------|");
+        System.out.println("\n|--------------------------------------|");
         System.out.println("|    --- --- Excluir Servico --- ---   |");
         System.out.println("|--------------------------------------|");
-        System.out.println("| Informe o ID do servico: ");
+        System.out.print("| Informe o ID do servico: ");
         int id = Integer.parseInt(sc.nextLine());
         servicoService.excluir(id);
+        System.out.println("|---------------------------------------|");
         System.out.println("| Servico excluido com sucesso!         |");
         System.out.println("|---------------------------------------|");
     }
 
     void editarServico() {
-        System.out.println("|--------------------------------------|");
+        System.out.println("\n|--------------------------------------|");
         System.out.println("|    --- --- Editar Servico --- ---    |");
         System.out.println("|--------------------------------------|");
-        System.out.println("| Informe o ID do servico: ");
+        System.out.print("| Informe o ID do servico: ");
         int id = Integer.parseInt(sc.nextLine());
         Servico servico = servicoService.buscarPorId(id);
 
         if(servico == null) {
+            System.out.println("|--------------------------------------|");
             System.out.println("| ERRO! Servico nao encontrado.        |");
             System.out.println("|--------------------------------------|");
             return;
         }
-
-        System.out.println("| Servico encontrado!                   |");
+        System.out.println("|--------------------------------------|");
+        System.out.println("| Servico encontrado!                  |");
         System.out.println("| Nome do servico atual: " + servico.getNomeServico());
-        System.out.println("| Novo nome do servico (ENTER para manter): ");
+        System.out.print("| Novo nome do servico (ENTER para manter): ");
         String nomeServico = sc.nextLine();
         if (!nomeServico.isEmpty()) {
             servico.setNomeServico(nomeServico);
         }
         System.out.println("| Data atual: " + servico.getData());
-        System.out.println("| Nova data (ENTER para manter): ");
+        System.out.print("| Nova data (ENTER para manter): ");
         String data = sc.nextLine();
         if (!data.isEmpty()) {
             servico.setData(data);
         }
         System.out.println("| Valor atual: R$ " + servico.getValor());
-        System.out.println("| Novo valor (ENTER para manter): ");
-        double valor = sc.nextDouble();
+        System.out.print("| Novo valor (ENTER para manter): R$ ");
+        double valor = Double.parseDouble(sc.nextLine());
         if (valor != 0 && valor != servico.getValor() && valor > 0) {
             servico.setValor(valor);
         } else if (valor < 0) {
@@ -143,13 +150,18 @@ public class ServicoMenu {
         }
 
         System.out.println("| Status atual: " + servico.getStatus());
-        System.out.println("| Novo Status (ATIVO/INATIVO) (ENTER para manter): ");
-        String statusInput = sc.nextLine();
-        if (!statusInput.isEmpty()) {
-            Status status = Status.valueOf(statusInput.toUpperCase());
+        System.out.println("| Novo Status");
+        System.out.println("| 1 - ATIVO\n| 2 - INATIVO\n| 3 - AGENDADO\n| 4 - EM ANDAMENTO\n| 5 - CONCLUIDO");
+        System.out.print("| Informe o numero do status (ENTER para manter): ");
+        int statusInput = Integer.parseInt(sc.nextLine());
+        if (statusInput > 0 && statusInput <= Status.values().length) {
+            Status status = Status.values()[statusInput - 1];
             servico.setStatus(status);
+        } else if (statusInput != 0) {
+            System.out.println("| Status invalido. Mantendo status atual. |");
         }
         servicoService.editar(servico);
+        System.out.println("|---------------------------------------|");
         System.out.println("| Servico atualizado com sucesso!       |");
         System.out.println("|---------------------------------------|");
     }

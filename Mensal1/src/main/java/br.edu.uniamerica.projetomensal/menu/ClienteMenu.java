@@ -16,7 +16,7 @@ public class ClienteMenu {
 
     public void iniciar() {
         do {
-            System.out.println("________________________________________");
+            System.out.println("\n|--------------------------------------|");
             System.out.println("| === === SISTEMA DETETIZADORA === === |");
             System.out.println("|  -- --- --- Menu Cliente --- --- --  |");
             System.out.println("| 1 - Cadastar                         |");
@@ -24,7 +24,7 @@ public class ClienteMenu {
             System.out.println("| 3 - Apagar                           |");
             System.out.println("| 4 - Listar                           |");
             System.out.println("| 0 - Voltar                           |");
-            System.out.println("----------------------------------------");
+            System.out.println("|--------------------------------------|");
             opcao = Integer.parseInt(sc.nextLine());
 
             switch (opcao) {
@@ -51,43 +51,42 @@ public class ClienteMenu {
     }
 
     void cadastrarCliente() {
-        System.out.println("|--------------------------------------|");
+        System.out.println("\n|--------------------------------------|");
         System.out.println("|  --- --- Cadastro de Cliente --- --- |");
         System.out.println("|--------------------------------------|");
-        System.out.println("| Nome da Empresa: ");
+        System.out.print("| Nome da Empresa: ");
         String nomeEmpresa = sc.nextLine();
-        System.out.println("| CNPJ: ");
-        String cnpj = sc.nextLine();
-        System.out.println("| CPF: ");
-        String cpf = sc.nextLine();
-        System.out.println("| Endereço: ");
+        System.out.print("| Documento (CPF/CNPJ): ");
+        String documento = sc.nextLine();
+        System.out.print("| Endereço: ");
         String endereco = sc.nextLine();
-        System.out.println("| Telefone: ");
+        System.out.print("| Telefone: ");
         String telefone = sc.nextLine();
-        System.out.println("| Email: ");
+        System.out.print("| Email: ");
         String email = sc.nextLine();
-        System.out.println("| Status (ATIVO/INATIVO): ");
-        String statusInput = sc.nextLine();
-        Status status = Status.valueOf(statusInput.toUpperCase());
+        System.out.print("| Status\n| 1 - ATIVO\n| 2 - INATIVO\n| Informe o numero do status: ");
+        int statusInput = Integer.parseInt(sc.nextLine());
+        Status status = Status.values()[statusInput - 1];
 
-        clienteService.cadastrarCliente(nomeEmpresa, cnpj, cpf, endereco, telefone, email, status);
+        Cliente cliente = clienteService.cadastrarCliente(nomeEmpresa, documento, endereco, telefone, email, status);
+        System.out.println("|---------------------------------------|");
         System.out.println("| Cliente cadastrado com sucesso!       |");
+        System.out.println("| ID do Cliente: " + cliente.getId() + "\t\t\t\t|");
         System.out.println("|---------------------------------------|");
     }
 
     void listarCliente() {
         List<Cliente> clientes = clienteService.listar();
 
-        System.out.println("|--------------------------------------|");
+        System.out.println("\n|--------------------------------------|");
         System.out.println("|  --- --- Lista de Clientes --- ---   |");
         System.out.println("|--------------------------------------|");
 
         for (Cliente c : clientes) {
-            System.out.println("|--------------------------------------|");
+            System.out.println("\n|--------------------------------------|");
             System.out.println("| ID: " + c.getId() + "\t |");
             System.out.println("| Nome da Empresa: " + c.getNomeEmpresa() + "\t |");
-            System.out.println("| CNPJ: " + c.getCnpj() + "\t |");
-            System.out.println("| CPF: " + c.getCpf() + "\t |");
+            System.out.println("| Documento: " + c.getDocumento() + "\t |");
             System.out.println("| Endereço: " + c.getEndereco() + "\t |");
             System.out.println("| Telefone: " + c.getTelefone() + "\t |");
             System.out.println("| Email: " + c.getEmail() + "\t |");
@@ -97,7 +96,7 @@ public class ClienteMenu {
     }
 
     void excluirCliente() {
-        System.out.println("|--------------------------------------|");
+        System.out.println("\n|--------------------------------------|");
         System.out.println("|    --- --- Excluir Cliente --- ---   |");
         System.out.println("|--------------------------------------|");
         System.out.println("| Informe o ID do cliente: ");
@@ -108,7 +107,7 @@ public class ClienteMenu {
     }
 
     void editarCliente() {
-        System.out.println("|--------------------------------------|");
+        System.out.println("\n|--------------------------------------|");
         System.out.println("|    --- --- Editar Cliente --- ---    |");
         System.out.println("|--------------------------------------|");
         System.out.println("| Informe o ID do cliente: ");
@@ -116,38 +115,43 @@ public class ClienteMenu {
         Cliente cliente = clienteService.buscarPorId(id);
 
         if(cliente == null) {
+            System.out.println("|--------------------------------------|");
             System.out.println("| ERRO! Cliente não encontrado.        |");
             System.out.println("|--------------------------------------|");
             return;
         }
 
-        System.out.println("| Cliente encontrado!                   |");
+        System.out.println("|--------------------------------------|");
+        System.out.println("| Cliente encontrado!                  |");
         System.out.println("| Nome da empresa atual: " + cliente.getNomeEmpresa());
-        System.out.println("| Novo nome da empresa (ENTER para manter): ");
+        System.out.print("| Novo nome da empresa (ENTER para manter): ");
         String nomeEmpresa = sc.nextLine();
         if (!nomeEmpresa.isEmpty()) {
             cliente.setNomeEmpresa(nomeEmpresa);
         }
         System.out.println("| Telefone atual: " + cliente.getTelefone());
-        System.out.println("| Novo telefone (ENTER para manter): ");
+        System.out.print("| Novo telefone (ENTER para manter): ");
         String telefone = sc.nextLine();
         if (!telefone.isEmpty()) {
             cliente.setTelefone(telefone);
         }
         System.out.println("| Email atual: " + cliente.getEmail());
-        System.out.println("| Novo e-mail (ENTER para manter): ");
+        System.out.print("| Novo e-mail (ENTER para manter): ");
         String email = sc.nextLine();
         if (!email.isEmpty()) {
             cliente.setEmail(email);
         }
         System.out.println("| Status atual: " + cliente.getStatus());
-        System.out.println("| Novo status (ATIVO/INATIVO) (ENTER para manter): ");
-        String statusInput = sc.nextLine();
-        if (!statusInput.isEmpty()) {
-            Status status = Status.valueOf(statusInput.toUpperCase());
+        System.out.print("| Novo status\n| 1 - ATIVO\n| 2 - INATIVO)\n| Informe o numero do status (ENTER para manter): ");
+        int statusInput = Integer.parseInt(sc.nextLine());
+        if (statusInput > 0 && statusInput <= Status.values().length) {
+            Status status = Status.values()[statusInput - 1];
             cliente.setStatus(status);
+        } else if (statusInput != 0) {
+            System.out.println("| Status inválido. Mantendo status atual. |");
         }
         clienteService.editar(cliente);
+        System.out.println("|---------------------------------------|");
         System.out.println("| Cliente atualizado com sucesso!       |");
         System.out.println("|---------------------------------------|");
     }
