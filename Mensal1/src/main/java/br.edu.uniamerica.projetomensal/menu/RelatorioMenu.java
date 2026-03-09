@@ -1,8 +1,8 @@
 package br.edu.uniamerica.projetomensal.menu;
 
 import br.edu.uniamerica.projetomensal.relatorio.RelatorioCliente;
+import br.edu.uniamerica.projetomensal.relatorio.RelatorioFuncionario;
 import br.edu.uniamerica.projetomensal.relatorio.RelatorioServico;
-import br.edu.uniamerica.projetomensal.service.ClienteService;
 import br.edu.uniamerica.projetomensal.utils.InputUtils;
 
 import java.util.Scanner;
@@ -14,6 +14,7 @@ public class RelatorioMenu {
 
     private RelatorioCliente relatorioCliente = new RelatorioCliente();
     private RelatorioServico relatorioServico = new RelatorioServico();
+    private RelatorioFuncionario relatorioFuncionario = new RelatorioFuncionario();
 
 
     public void iniciar() {
@@ -34,12 +35,12 @@ public class RelatorioMenu {
                     relatorioCliente.totalClientes();
                     break;
                 case 2:
-
+                    relatorioFuncionario.relatorioFuncionarios();
+                    break;
                 case 3:
                     relatorioServico.totalFaturado();
                     break;
             }
         } while (opcao != 0);
-
     }
 }

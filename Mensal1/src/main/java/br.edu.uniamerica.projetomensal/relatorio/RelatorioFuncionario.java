@@ -1,4 +1,49 @@
 package br.edu.uniamerica.projetomensal.relatorio;
 
+import br.edu.uniamerica.projetomensal.model.Funcionario;
+import br.edu.uniamerica.projetomensal.model.enums.Cargo;
+import br.edu.uniamerica.projetomensal.service.FuncionarioService;
+
 public class RelatorioFuncionario {
+
+    // Instancia do FuncionarioService para acessar os dados dos funcionarios
+    private FuncionarioService funcionarioService = new FuncionarioService();
+
+    // Relatorio que exibe o total de funcionarios, gerentes, devs e o total de salarios a pagar
+    public void relatorioFuncionarios() {
+        // Atributos
+        int totalFuncionarios = 0;
+        int totalGerentes = 0;
+        int totalDevs = 0;
+
+        double totalSalarios = 0;
+
+        // For each para percorrer a lista de funcionarios e contar o total de cada cargo e somar o total de salarios
+        for (Funcionario f : funcionarioService.listar()) {
+            if (f.getCargo() == Cargo.GERENTE) {
+                totalGerentes++;
+            } else if (f.getCargo() == Cargo.DEV) {
+                totalDevs++;
+            } else if (f.getCargo() == Cargo.FUNCIONARIO) {
+                totalFuncionarios++;
+            }
+
+            // Somatorio
+            totalSalarios += f.getSalario();
+        }
+
+        // Total dos funcionarios
+        int total = totalFuncionarios + totalGerentes + totalDevs;
+
+        System.out.println("\n|----------------------------------------|");
+        System.out.println("|  --- --- Relatorio Funcionario --- --- |");
+        System.out.println("|----------------------------------------|");
+        System.out.printf("| Funcionarios: %d", totalFuncionarios);
+        System.out.printf("\n| Gerentes: %d    ", totalGerentes);
+        System.out.printf("\n| Devs: %d        ", totalDevs);
+        System.out.println("|----------------------------------------|");
+        System.out.printf("| Total de funcionarios: %d ", total);
+        System.out.printf("\n| Total de salarios a pagar: R$ %.2f", totalSalarios);
+        System.out.println("|----------------------------------------|");
+    }
 }

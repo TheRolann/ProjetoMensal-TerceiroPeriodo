@@ -4,6 +4,7 @@ import br.edu.uniamerica.projetomensal.model.enums.Status;
 
 public class Servico {
 
+    // Atributos
     private int id;
     private String nomeServico = "";
     private String descricao = "";
@@ -12,6 +13,7 @@ public class Servico {
     private int clienteID;
     private Status status;
 
+    // Construtor
     public Servico(int id, String nomeServico, String descricao, String data,
                    double valor, int clienteID, Status status){
         this.id = id;
@@ -23,59 +25,27 @@ public class Servico {
         this.status = status;
     }
 
-    public int getId() {
-        return id;
-    }
+    // Getters e Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public String getNomeServico() {
-        return nomeServico;
-    }
+    public String getNomeServico() { return nomeServico; }
+    public void setNomeServico(String nomeServico) { this.nomeServico = nomeServico; }
 
-    public void setNomeServico(String nomeServico) {
-        this.nomeServico = nomeServico;
-    }
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public String getData() { return data; }
+    public void setData(String data) { this.data = data; }
 
-    public String getDescricao() {
-        return descricao;
-    }
+    public double getValor() { return valor; }
+    public void setValor(double valor) { this.valor = valor; }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
+    public int getClienteID() { return clienteID; }
+    public void setClienteID(int clienteID) { this.clienteID = clienteID; }
 
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
-    }
-
-    public double getValor() {
-        return valor;
-    }
-
-    public void setValor(double valor) {
-        this.valor = valor;
-    }
-
-    public int getClienteID() {
-        return clienteID;
-    }
-
-    public void setClienteID(int clienteID) {
-        this.clienteID = clienteID;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
+    public Status getStatus() { return status; }
+    public void setStatus(Status status) { this.status = status; }
 }
+
+

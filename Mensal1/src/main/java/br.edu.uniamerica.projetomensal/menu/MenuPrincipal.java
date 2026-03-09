@@ -19,6 +19,7 @@ public class MenuPrincipal {
             System.out.println("|--------------------------------------|");
             System.out.println("| === === SISTEMA DETETIZADORA === === |");
             System.out.println("| -- --- --- Menu Principal --- --- -- |");
+            System.out.println("|                                      |");
             System.out.println("| 1 - Clientes                         |");
             System.out.println("| 2 - Funcionarios                     |");
             System.out.println("| 3 - Servicos                         |");
@@ -32,7 +33,7 @@ public class MenuPrincipal {
                     clienteMenu.iniciar();
                     break;
                 case 2:
-                    // funcionarioMenu.iniciar();
+                    funcionarioMenu.iniciar();
                     break;
                 case 3:
                     servicoMenu.iniciar();

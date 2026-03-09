@@ -8,14 +8,20 @@ public class Funcionario {
     private int id;
     private String nome;
     private String cpf;
+    private String telefone;
+    private String email;
+    private double salario;
     private Cargo cargo;
     private Status status;
 
      // Construtor
-    public Funcionario(int id, String nome, String cpf, Cargo cargo, Status status) {
+    public Funcionario(int id, String nome, String cpf, String telefone, String email, double salario, Cargo cargo, Status status) {
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;
+        this.telefone = telefone;
+        this.email = email;
+        this.salario = salario;
         this.cargo = cargo;
         this.status = status;
     }
@@ -30,6 +36,15 @@ public class Funcionario {
 
     public String getCpf() { return cpf; }
     public void setCpf(String cpf) { this.cpf = cpf; }
+
+    public String getTelefone() { return telefone; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public double getSalario() { return salario; }
+    public void setSalario(double salario) { this.salario = salario; }
 
     public Cargo getCargo() { return cargo; }
     public void setCargo(Cargo cargo) { this.cargo = cargo; }

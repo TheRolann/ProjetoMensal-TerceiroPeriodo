@@ -1,7 +1,9 @@
 package br.edu.uniamerica.projetomensal.menu;
 
+import br.edu.uniamerica.projetomensal.model.Cliente;
 import br.edu.uniamerica.projetomensal.model.Servico;
 import br.edu.uniamerica.projetomensal.model.enums.Status;
+import br.edu.uniamerica.projetomensal.service.ClienteService;
 import br.edu.uniamerica.projetomensal.service.ServicoService;
 import br.edu.uniamerica.projetomensal.utils.InputUtils;
 
@@ -9,20 +11,25 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ServicoMenu {
+
+    // Instancia do ServicoService e ClienteService para realizar operacoes
     private ServicoService servicoService = new ServicoService();
+    private ClienteService clienteService = new ClienteService();
+
     // Scanner para entrada de dados
     Scanner sc = new Scanner(System.in);
 
     int opcao;
 
+    // Metodo para iniciar o menu de servicos
     public void iniciar() {
-
         do {
             System.out.println("\n|--------------------------------------|");
             System.out.println("| === === SISTEMA DETETIZADORA === === |");
             System.out.println("|  -- --- --- Menu Servico --- --- --  |");
+            System.out.println("|                                      |");
             System.out.println("| 1 - Cadastar                         |");
-            System.out.println("| 2 - Editar                           |");
+            System.out.println("| 2 - Atualizar                        |");
             System.out.println("| 3 - Apagar                           |");
             System.out.println("| 4 - Listar                           |");
             System.out.println("| 0 - Voltar                           |");
@@ -46,99 +53,216 @@ public class ServicoMenu {
                     System.out.println("Voltando ao menu principal...");
                     break;
                 default:
-                    System.out.println("Opção inválida. Tente novamente.");
+                    System.out.println("Opcao invalida. Tente novamente.");
             }
 
         } while (opcao != 0);
     }
 
+    // Metodo para cadastrar um novo servico
     void cadastrarServico() {
         System.out.println("\n|--------------------------------------|");
         System.out.println("|  --- --- Cadastro de Servico --- --- |");
         System.out.println("|--------------------------------------|");
+
+        // Verificacao para criar servico apenas se o cliente estiver cadastrado
+        List<Cliente> clientes = clienteService.listar();
+        if (clientes.isEmpty()) {
+            System.out.println("\n|--------------------------------------|");
+            System.out.println("| Nenhum cliente cadastrado.           |");
+            System.out.println("| Cadastre um cliente antes do servico.|");
+            System.out.println("|--------------------------------------|");
+            return;
+        }
+
+        // Utilizando a Classe InputUtils para ler os dados do servico com validacao
         String nomeServico = InputUtils.lerString(sc, "| Nome do Servico: ");
         String descricao = InputUtils.lerString(sc, "| Descricao do Servico: ");
-        String data = InputUtils.lerString(sc, "| Data Agendada (DD/MM/AAAA): ");
-        double valor = InputUtils.lerDouble(sc, "| Valor do Servico: R$ ");
-        int clienteID = InputUtils.lerInt(sc, "| ID do Cliente: ");
-        System.out.println("| Status do Servico ");
-        System.out.println("| 1 - ATIVO\n| 2 - INATIVO\n| 3 - AGENDADO\n| 4 - EM ANDAMENTO\n| 5 - CONCLUIDO");
-        System.out.print("| Informe o numero do status: ");
-        int statusInput = InputUtils.lerInt(sc, "");
-        // Cria um array de Status do Enum e seleciona o status com base na entrada do usuario
-        // ex: [ATIVO, INATIVO, AGENDADO, EM_ANDAMENTO, CONCLUIDO]
-        Status status = Status.values()[statusInput - 1];
+        String data = InputUtils.lerData(sc, "| Data Agendada (DD/MM/AAAA): ");
+        data = data.replaceAll("[^0-9]", ""); // Remove tudo que nao for numero
 
+        double valor = InputUtils.lerDouble(sc, "| Valor do Servico: R$ ");
+
+        System.out.println("| Clientes disponiveis ----------------|");
+        for (Cliente c : clientes) {
+            System.out.println("| ID: " + c.getId() + " - Nome: " + c.getNomeEmpresa());
+        }
+        int clienteID;
+        while (true) {
+            clienteID = InputUtils.lerInt(sc, "| ID do Cliente: ");
+            if (clienteService.buscarPorId(clienteID) != null) {
+                break; // Cliente encontrado, sai do loop
+            } else {
+                System.out.println("| Cliente nao encontrado. Tente novamente.");
+            }
+        }
+
+        System.out.println("| Status do Servico ");
+        System.out.println("| 1 - INATIVO\n| 2 - AGENDADO\n| 3 - EM ANDAMENTO\n| 4 - CONCLUIDO");
+        int statusInput = InputUtils.lerInt(sc, "| Informe o numero do status: ");
+
+        // Transforma o Enum Status a partir do numero informado pelo usuario, como uma lista de opcoes
+        // Variavel Status do tipo Enum para armazenar o status selecionado
+
+        Status status;
+        if (statusInput > 4 || statusInput < 1) { // Verificacao para nao permitir 1 - ATIVO
+            System.out.println("| Status invalido. Definindo como AGENDADO.");
+            status = Status.AGENDADO;
+        } else {
+            // Cria um array de Status do Enum e seleciona o status com base na entrada do usuario
+            // ex: [ATIVO, INATIVO, AGENDADO, EM_ANDAMENTO, CONCLUIDO]
+            status = Status.values()[statusInput];
+        }
+
+        // Cria o objeto Servico utilizando o ServicoService e o metodo cadastrar, passando os dados informados pelo usuario
         Servico servico = servicoService.cadastrar(nomeServico, descricao, data, valor, clienteID, status);
+
         System.out.println("\n|---------------------------------------|");
         System.out.println("| Servico cadastrado com sucesso!       |");
-        System.out.println("| ID do Servico: " + servico.getId() + "        \t\t|");
+        System.out.println("| ID do Servico: " + servico.getId());
         System.out.println("|---------------------------------------|");
     }
 
     void listarServico() {
+
+        // Cria uma lista dinamica utilizando o servicoService para listar todos os servicos cadastrados
         List<Servico> servicos = servicoService.listar();
 
         System.out.println("\n|--------------------------------------|");
         System.out.println("|  --- --- Lista de Servicos --- ---   |");
         System.out.println("|--------------------------------------|");
 
+        // Verifica se a lista esta vazia
+        if(servicos.isEmpty()){
+            System.out.println("\n|--------------------------------------|");
+            System.out.println("| Nenhum servico cadastrado.           |");
+            System.out.println("|--------------------------------------|");
+            return;
+        }
+
+        // Imprime os dados usando for-each, pegando os atributos e utilizando os getters
         for (Servico c : servicos) {
             System.out.println("\n|--------------------------------------|");
-            System.out.println("| ID: " + c.getId() + "\t |");
-            System.out.println("| Nome do Servico: " + c.getNomeServico() + "\t |");
-            System.out.println("| Descricao: " + c.getDescricao() + "\t |");
-            System.out.println("| Data: " + c.getData() + "\t |");
-            System.out.println("| Valor: R$ " + c.getValor() + "\t |");
-            System.out.println("| ID do Cliente: " + c.getClienteID() + "\t |");
-            System.out.println("| Status: " + c.getStatus() + "\t |");
+            System.out.println("| ID: " + c.getId());
+            System.out.println("| Nome do Servico: " + c.getNomeServico());
+            System.out.println("| Descricao: " + c.getDescricao());
+            System.out.println("| Data: " + c.getData());
+            System.out.println("| Valor: R$ " + c.getValor());
+            System.out.println("| ID do Cliente: " + c.getClienteID());
+            System.out.println("| Status: " + c.getStatus());
             System.out.println("|--------------------------------------|");
         }
+
+        // Mostrando o total com metodo size() da lista
+        System.out.println("\n| Total de servicos: " + servicos.size());
     }
 
+    // Metodo para excluir um funcionario existente, solicitando o ID a ser removido
     void excluirServico() {
         System.out.println("\n|--------------------------------------|");
         System.out.println("|    --- --- Excluir Servico --- ---   |");
         System.out.println("|--------------------------------------|");
-        System.out.print("| Informe o ID do servico: ");
-        int id = InputUtils.lerInt(sc, "");
-        servicoService.excluir(id);
-        System.out.println("|---------------------------------------|");
-        System.out.println("| Servico excluido com sucesso!         |");
-        System.out.println("|---------------------------------------|");
+        System.out.println("| Servicos disponiveis:                |");
+
+        // Criando uma lista dinamica com servicoService para obter os funcionarios cadastrados
+        List<Servico> servicos = servicoService.listar();
+
+        // Verificando se a lista esta vazia, e se nao estiver, exibe os funcionarios disponiveis
+        if (servicos.isEmpty()) {
+            System.out.println("\n|--------------------------------------|");
+            System.out.println("| Nenhum servico cadastrado.           |");
+            System.out.println("|--------------------------------------|");
+            return;
+        } else {
+            for (Servico c : servicos) {
+                System.out.println("| ID: " + c.getId() + " - Nome: " + c.getNomeServico());
+            }
+        }
+
+        int id = InputUtils.lerInt(sc, "| Informe o ID do servico: ");
+
+        // Criando o objeto utilizando servicoService para buscar o servico pelo ID informado, utilizando o metodo buscarPorId
+        Servico servico = servicoService.buscarPorId(id);
+
+        // Verifica se existe o servico
+        if(servico == null){
+            System.out.println("|--------------------------------------|");
+            System.out.println("| Servico nao encontrado.              |");
+            System.out.println("|--------------------------------------|");
+            return;
+        }
+
+        // Mostra o dado a ser excluido
+        System.out.println("|--------------------------------------|");
+        System.out.println("| Servico encontrado:");
+        System.out.println("| Nome: " + servico.getNomeServico());
+        System.out.println("| Valor: R$ " + servico.getValor());
+        System.out.println("| Status: " + servico.getStatus());
+        System.out.println("|--------------------------------------|");
+
+        String confirmacao = InputUtils.lerString(sc,"| Confirmar exclusao (S/N): ");
+
+        // Validacao com "equalsIgnoreCase" que ignora maiusculas e minusculas, caso usuario digite qualquer outra letra, a operacao sera cancelada
+        if(confirmacao.equalsIgnoreCase("S")){
+            servicoService.excluir(id);
+            System.out.println("| Servico removido com sucesso.");
+        } else {
+            System.out.println("| Operacao cancelada.");
+        }
     }
 
+    // Metodo para editar um funcionario existente, solicitando o ID do funcionario a ser editado
     void editarServico() {
         System.out.println("\n|--------------------------------------|");
         System.out.println("|    --- --- Editar Servico --- ---    |");
         System.out.println("|--------------------------------------|");
-        System.out.print("| Informe o ID do servico: ");
-        int id = InputUtils.lerInt(sc, "");
+
+        // Criando uma lista dinamica com servicoService para obter os servicos cadastrados
+        List<Servico> servicos = servicoService.listar();
+        // Verificando se a lista esta vazia, e se nao estiver, exibe os servicos disponiveis
+        if (servicos.isEmpty()) {
+            System.out.println("\n|--------------------------------------|");
+            System.out.println("| Nenhum servico cadastrado.           |");
+            System.out.println("|--------------------------------------|");
+            return;
+        } else {
+            for (Servico c : servicos) { // Exibe o ID e o nome do servico para facilitar a escolha do servico a ser editado
+                System.out.println("| ID: " + c.getId() + " - Nome: " + c.getNomeServico());
+            }
+        }
+
+        int id = InputUtils.lerInt(sc, "| Informe o ID do servico: ");
+
         Servico servico = servicoService.buscarPorId(id);
 
+        // Verifica se o ID digitado corresponde a um servico existente
         if(servico == null) {
             System.out.println("|--------------------------------------|");
             System.out.println("| ERRO! Servico nao encontrado.        |");
             System.out.println("|--------------------------------------|");
             return;
         }
+
+        // Mostra os dados a serem editados, e solicita alteracao
         System.out.println("|--------------------------------------|");
         System.out.println("| Servico encontrado!                  |");
         System.out.println("| Nome do servico atual: " + servico.getNomeServico());
-        System.out.print("| Novo nome do servico (ENTER para manter): ");
-        String nomeServico = InputUtils.lerString(sc, "");
-        if (!nomeServico.isEmpty()) {
+        // Utilizando "lerStringOpcional" para permitir enter
+        String nomeServico = InputUtils.lerStringOpcional(sc, "| Novo nome do servico (ENTER p/ manter): ");
+        if (!nomeServico.isEmpty()) { // Caso o usuario digite algo diferente de vazio, o nome do servico sera atualizado, caso contrario, mantem o nome atual
             servico.setNomeServico(nomeServico);
         }
-        System.out.println("| Data atual: " + servico.getData());
-        System.out.print("| Nova data (ENTER para manter): ");
-        String data = InputUtils.lerString(sc, "");
+
+        System.out.println("| Data atual: " + InputUtils.formatarData(servico.getData()));
+        String data = InputUtils.lerStringOpcional(sc, "| Nova data (ENTER para manter): ");
+        data = data.replaceAll("[^0-9]", ""); // Remove tudo que nao for numero
         if (!data.isEmpty()) {
             servico.setData(data);
         }
+
         System.out.println("| Valor atual: R$ " + servico.getValor());
-        System.out.print("| Novo valor (ENTER para manter): R$ ");
-        double valor = InputUtils.lerDouble(sc, "");
+        double valor = InputUtils.lerDoubleOpcional(sc, "| Novo valor (0 p/ manter): R$ ");
+
         if (valor != 0 && valor != servico.getValor() && valor > 0) {
             servico.setValor(valor);
         } else if (valor < 0 || valor == servico.getValor()) {
@@ -147,16 +271,20 @@ public class ServicoMenu {
 
         System.out.println("| Status atual: " + servico.getStatus());
         System.out.println("| Novo Status");
-        System.out.println("| 1 - ATIVO\n| 2 - INATIVO\n| 3 - AGENDADO\n| 4 - EM ANDAMENTO\n| 5 - CONCLUIDO");
-        System.out.print("| Informe o numero do status (ENTER para manter): ");
-        int statusInput = InputUtils.lerInt(sc, "");
-        if (statusInput > 0 && statusInput <= Status.values().length) {
-            Status status = Status.values()[statusInput - 1];
+        System.out.println("| 1 - INATIVO\n| 2 - AGENDADO\n| 3 - EM ANDAMENTO\n| 4 - CONCLUIDO");
+        int statusInput = InputUtils.lerIntOpcional(sc, "| Informe o numero do status (ENTER para manter): ");
+
+        // Verificacao para colocar os status, e proibir o status 1 - ATIVO
+        if (statusInput > 1 && statusInput <= Status.values().length) {
+            Status status = Status.values()[statusInput];
             servico.setStatus(status);
         } else if (statusInput != 0) {
             System.out.println("| Status invalido. Mantendo status atual. |");
         }
+
+        // Edita o objeto funcionario utilizando o funcionarioService, e mostra mensagem de sucesso
         servicoService.editar(servico);
+
         System.out.println("|---------------------------------------|");
         System.out.println("| Servico atualizado com sucesso!       |");
         System.out.println("|---------------------------------------|");

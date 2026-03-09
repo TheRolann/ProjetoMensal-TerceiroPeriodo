@@ -1,4 +1,291 @@
 package br.edu.uniamerica.projetomensal.menu;
 
+import br.edu.uniamerica.projetomensal.model.Cliente;
+import br.edu.uniamerica.projetomensal.model.Funcionario;
+import br.edu.uniamerica.projetomensal.model.enums.Cargo;
+import br.edu.uniamerica.projetomensal.model.enums.Status;
+import br.edu.uniamerica.projetomensal.service.FuncionarioService;
+import br.edu.uniamerica.projetomensal.utils.InputUtils;
+
+import java.util.List;
+import java.util.Scanner;
+
 public class FuncionarioMenu {
+
+    // Instancia do servico para gerenciar funcionarios
+    private FuncionarioService funcionarioService = new FuncionarioService();
+    Scanner sc = new Scanner(System.in);
+
+    int opcao;
+
+    // Metodo para iniciar o menu de funcionarios
+    public void iniciar() {
+
+        do {
+            System.out.println("\n|--------------------------------------|");
+            System.out.println("| === === SISTEMA DETETIZADORA === === |");
+            System.out.println("|  --- --- Menu Funcionarios  --- ---  |");
+            System.out.println("|                                      |");
+            System.out.println("| 1 - Cadastrar                        |");
+            System.out.println("| 2 - Atualizar                        |");
+            System.out.println("| 3 - Apagar                           |");
+            System.out.println("| 4 - Listar                           |");
+            System.out.println("| 0 - Voltar                           |");
+            System.out.println("|--------------------------------------|");
+
+            opcao = InputUtils.lerInt(sc,"Opcao: ");
+
+            switch (opcao) {
+                case 1:
+                    cadastrarFuncionario();
+                    break;
+                case 2:
+                    editarFuncionario();
+                    break;
+                case 3:
+                    excluirFuncionario();
+                    break;
+                case 4:
+                    listarFuncionarios();
+                    break;
+                case 0:
+                    System.out.println("Voltando ao menu principal...");
+                    break;
+                default:
+                    System.out.println("Opcao invalida. Tente novamente.");
+            }
+
+        } while (opcao != 0);
+    }
+
+    // Metodo para cadastrar um novo funcionario
+    void cadastrarFuncionario() {
+
+        System.out.println("\n|--------------------------------------|");
+        System.out.println("|  - --- Cadastro de Funcionario --- - |");
+        System.out.println("|--------------------------------------|");
+
+        // Utilizando a Classe InputUtils para ler os dados do funcionario com validacao
+        String nome = InputUtils.lerString(sc,"| Nome: ");
+        String cpf = InputUtils.lerDocumento(sc,"| CPF: ");
+        String telefone = InputUtils.lerSomenteNumeros(sc,"| Telefone: ");
+        String email = InputUtils.lerString(sc,"| Email: ");
+        double salario = InputUtils.lerDouble(sc,"| Salario: R$ ");
+
+        System.out.println("| Cargo:");
+        System.out.println("| 1 - GERENTE");
+        System.out.println("| 2 - DEV");
+        System.out.println("| 3 - FUNCIONARIO");
+
+        int cargoInput = InputUtils.lerInt(sc,"| Informe o numero do cargo: ");
+
+        // Transforma o Enum em um valor do tipo Cargo, tipo uma lista onde converte o numero pela posicao
+        // ex: [ATIVO, INATIVO, AGENDADO, EM_ANDAMENTO, CONCLUIDO]
+        Cargo cargo = Cargo.values()[cargoInput - 1];
+
+        System.out.println("| Status:");
+        System.out.println("| 1 - ATIVO");
+        System.out.println("| 2 - INATIVO");
+
+        int statusInput = InputUtils.lerInt(sc,"| Informe o numero do status: ");
+        Status status; // Cria uma variavel do tipo Status para receber o valor do Enum
+        // Valida se o numero do status esta dentro do range permitido, se nao estiver define como ATIVO por padrao
+        if (statusInput > 2 || statusInput < 1) {
+            System.out.println("| Status inválido. Definindo como ATIVO.");
+            status = Status.ATIVO;
+        } else {
+            // Mesmo processo do cargo, converte o numero para o valor do Enum correspondente
+            status = Status.values()[statusInput - 1];
+        }
+
+        // Cria o objeto Funcionario utilizando o servico, que ja gera o ID automaticamente
+        Funcionario funcionario = funcionarioService.cadastrarFuncionario(nome, cpf, telefone, email, salario, cargo, status);
+
+        System.out.println("|--------------------------------------|");
+        System.out.println("| Funcionario cadastrado com sucesso!  |");
+        System.out.println("| ID: " + funcionario.getId());
+        System.out.println("|--------------------------------------|");
+    }
+
+    // Metodo para listar todos os funcionarios cadastrados
+    void listarFuncionarios() {
+
+        // Cria uma lista de funcionarios utilizando o servico para obter todos os funcionarios cadastrados
+        List<Funcionario> funcionarios = funcionarioService.listar();
+
+        System.out.println("\n|--------------------------------------|");
+        System.out.println("|  -- --- Lista de Funcionarios --- -- |");
+        System.out.println("|--------------------------------------|");
+
+        // Verifica se a lista esta vazia
+        if(funcionarios.isEmpty()){
+            System.out.println("\n|--------------------------------------|");
+            System.out.println("| Nenhum funcionario cadastrado.       |");
+            System.out.println("|--------------------------------------|");
+            return;
+        }
+
+        // Imprime os dados usando for-each, pegando os atributos de cada funcionario utilizando os getters
+        for (Funcionario f : funcionarios) {
+            System.out.println("\n|--------------------------------------|");
+            System.out.println("| ID: " + f.getId());
+            System.out.println("| Nome: " + f.getNome());
+            System.out.println("| CPF: " + f.getCpf());
+            System.out.println("| Telefone: " + f.getTelefone());
+            System.out.println("| Email: " + f.getEmail());
+            System.out.println("| Cargo: " + f.getCargo());
+            System.out.println("| Salario: R$ " + f.getSalario());
+            System.out.println("|--------------------------------------|");
+        }
+
+        // Mostra o total de funcionarios cadastrados utilizando o metodo size() da lista
+        System.out.println("\n| Total de funcionarios: " + funcionarios.size());
+    }
+
+    // Metodo para excluir um funcionario existente, solicitando o ID do funcionario a ser removido
+    void excluirFuncionario() {
+        System.out.println("\n|--------------------------------------|");
+        System.out.println("|  --- --- Remover Funcionario --- --- |");
+        System.out.println("|--------------------------------------|");
+        System.out.println("| Funcionarios disponiveis:            |");
+
+        // Criando uma lista dinamica com funcionarioService para obter os funcionarios cadastrados
+        List<Funcionario> funcionarios = funcionarioService.listar();
+
+        // Verificando se a lista esta vazia, e se nao estiver, exibe os funcionarios disponiveis
+        if(funcionarios.isEmpty()){
+            System.out.println("\n|--------------------------------------|");
+            System.out.println("| Nenhum funcionario cadastrado.       |");
+            System.out.println("|--------------------------------------|");
+            return;
+        } else {
+            for (Funcionario f : funcionarios) {
+                System.out.println("| ID: " + f.getId() + " - Nome: " + f.getNome());
+            }
+        }
+        int id = InputUtils.lerInt(sc,"| Informe o ID do funcionario: ");
+
+        // Criando o objeto utilizando funcionarioService para buscar o funcionario pelo ID informado, utilizando o metodo buscarPorId()
+        Funcionario funcionario = funcionarioService.buscarPorId(id);
+
+        if(funcionario == null){
+            System.out.println("|--------------------------------------|");
+            System.out.println("| Funcionario nao encontrado.          |");
+            System.out.println("|--------------------------------------|");
+            return;
+        }
+
+        // Mostra os dados do funcionario a ser excluido
+        System.out.println("|--------------------------------------|");
+        System.out.println("| Funcionario encontrado:");
+        System.out.println("| Nome: " + funcionario.getNome());
+        System.out.println("| CPF: " + funcionario.getCpf());
+        System.out.println("| Salario: R$ " + funcionario.getSalario());
+        System.out.println("| Cargo: " + funcionario.getCargo());
+        System.out.println("|--------------------------------------|");
+
+        String confirmacao = InputUtils.lerString(sc,"| Confirmar exclusao (S/N): ");
+
+        // Validacao com "equalsIgnoreCase" que ignora maiusculas e minusculas, caso usuario digite qualquer outra letra, a operacao sera cancelada
+        if(confirmacao.equalsIgnoreCase("S")){
+            funcionarioService.excluir(id);
+            System.out.println("| Funcionario removido com sucesso.");
+        } else {
+            System.out.println("| Operacao cancelada.");
+        }
+    }
+
+    // Metodo para editar um funcionario existente, solicitando o ID do funcionario a ser editado
+    void editarFuncionario() {
+        System.out.println("\n|--------------------------------------|");
+        System.out.println("|  -- --- Atualizar Funcionario --- -- |");
+        System.out.println("|--------------------------------------|");
+
+        // Criando uma lista dinamica com funcionarioService para obter os funcionarios cadastrados
+        List<Funcionario> funcionarios = funcionarioService.listar();
+        // Verificando se a lista esta vazia, e se nao estiver, exibe os funcionarios disponiveis
+        if (funcionarios.isEmpty()) {
+            System.out.println("\n|--------------------------------------|");
+            System.out.println("| Nenhum funcionario cadastrado.       |");
+            System.out.println("|--------------------------------------|");
+            return;
+        } else {
+            for (Funcionario f : funcionarios) { // Exibe o ID e o nome do funcionario para facilitar a escolha
+                System.out.println("| ID: " + f.getId() + " - Nome: " + f.getNome());
+            }
+        }
+        int id = InputUtils.lerInt(sc,"| Informe o ID do funcionario: ");
+
+        Funcionario funcionario = funcionarioService.buscarPorId(id);
+
+        // Verifica se o ID digitado corresponde a um funcionario existente
+        if(funcionario == null){
+            System.out.println("|--------------------------------------|");
+            System.out.println("| ERRO! Funcionario nao encontrado.    |");
+            System.out.println("|--------------------------------------|");
+            return;
+        }
+
+        // Mostra os dados do funcionario a ser editado, e solicita alteracao
+        System.out.println("|--------------------------------------|");
+        System.out.println("| Funcionario encontrado!              |");
+        System.out.println("| Nome atual: " + funcionario.getNome());
+        // Utilizando "lerStringOpcional" para permitir enter vazio
+        String nome = InputUtils.lerStringOpcional(sc,"| Novo nome (ENTER p/ manter): ");
+        if(!nome.isEmpty()) { // Caso o usuario digite algo diferente de vazio, o nome da empresa/cliente sera atualizado, caso contrario, mantem o nome atual
+            funcionario.setNome(nome);
+        }
+
+        System.out.println("| Telefone atual: " + funcionario.getTelefone());
+        String telefone = InputUtils.lerStringOpcional(sc,"| Novo telefone (ENTER p/ manter): ");
+        telefone = telefone.replaceAll("[^0-9]", ""); // Remove tudo que nao for numero
+        if(!telefone.isEmpty()) {
+            funcionario.setTelefone(telefone);
+        }
+
+        System.out.println("| Email atual: " + funcionario.getEmail());
+        String email = InputUtils.lerStringOpcional(sc,"| Novo email (ENTER p/ manter): ");
+        if(!email.isEmpty()) {
+            funcionario.setEmail(email);
+        }
+
+        System.out.println("| Salario atual: R$ " + funcionario.getSalario());
+        double salario = InputUtils.lerDouble(sc,"| Novo salario (0 p/ manter): ");
+
+        if(salario > 0){
+            funcionario.setSalario(salario);
+        }
+
+        System.out.println("| Cargo atual: " + funcionario.getCargo());
+        System.out.println("| 1 - GERENTE\n2 - DEV\n3 - FUNCIONARIO");
+        int cargoInput = InputUtils.lerIntOpcional(sc,"| Informe o numero do cargo (ENTER para manter): ");
+
+        // Verifica se o numero do cargo esta dentro do range permitido, se nao estiver, a operacao sera cancelada
+        // Caso contrario, converte o numero para o valor do Enum correspondente e atualiza o cargo do funcionario
+        if (cargoInput > 0 && cargoInput <= Status.values().length) {
+            Status status = Status.values()[cargoInput - 1];
+            funcionario.setStatus(status);
+        } else if (cargoInput != 0) {
+            System.out.println("| Cargo invalido. Mantendo cargo atual. |");
+        }
+
+        System.out.println("| Status atual: " + funcionario.getStatus());
+        System.out.println("| 1 - ATIVO\n2 - INATIVO");
+        int statusInput = InputUtils.lerIntOpcional(sc,"| Informe o numero do status (ENTER para manter): ");
+
+        // Mesmo caso do cargo, mas faz a validacao para o status, para nao permitir numeros fora do range
+        if (statusInput > 0 && statusInput <= Status.values().length) {
+            Status status = Status.values()[statusInput - 1];
+            funcionario.setStatus(status);
+        } else if (statusInput != 0) {
+            System.out.println("| Status invalido. Mantendo status atual. |");
+        }
+
+        // Edita o objeto funcionario utilizando o funcionarioService, que atualiza os dados do funcionario na lista
+        funcionarioService.editar(funcionario);
+
+        System.out.println("|--------------------------------------|");
+        System.out.println("| Funcionario atualizado com sucesso!  |");
+        System.out.println("|--------------------------------------|");
+    }
 }
