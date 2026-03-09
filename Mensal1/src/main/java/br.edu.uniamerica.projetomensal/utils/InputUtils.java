@@ -126,6 +126,42 @@ public class InputUtils {
         }
     }
 
+    // Metodo para ler numeros de telefone, validando o formato e garantindo que o usuario digite um numero de telefone valido, com 10 ou 11 digitos, sem letras ou simbolos
+    public static String lerTelefone(Scanner sc, String mensagem) {
+        while (true) {
+            System.out.print(mensagem);
+            String entrada = sc.nextLine().trim();
+            if (entrada.isEmpty()) {
+                System.out.println("Entrada vazia. Por favor, digite um numero de telefone valido.");
+                continue;
+            }
+            // A expressao regular "\\d{10,11}" verifica se a entrada consiste apenas de numeros e tem entre 10 e 11 digitos, permitindo formatos de telefone com ou sem o nono digito
+            if (!entrada.matches("\\d{10,11}")) { // Verifica se a entrada tem entre 10 e 11 numeros
+                System.out.println("Entrada invalida. O numero de telefone deve conter entre 10 e 11 numeros.");
+                continue;
+            }
+            return entrada;
+        }
+    }
+
+    // Metodo para ler email, com utilizacao do regex para validar o formato do email
+    public static String lerEmail(Scanner sc, String mensagem) {
+        while (true) {
+            System.out.print(mensagem);
+            String entrada = sc.nextLine().trim();
+            if (entrada.isEmpty()) {
+                System.out.println("Entrada vazia. Por favor, digite um email valido.");
+                continue;
+            }
+            // A expressao regular "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$" verifica se a entrada tem um formato de email valido, com caracteres antes e depois do @ e um dominio
+            if (!entrada.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) { // Verifica se a entrada tem um formato de email valido
+                System.out.println("Entrada invalida. Por favor, digite um email valido.");
+                continue;
+            }
+            return entrada;
+        }
+    }
+
     // Metodo para formatar a data, como no sistema a data e salvo sequencial, DDMMYYYY, esse metodo formata com /
     public static String formatarData(String data) {
         if (data == null || data.length() != 8) { // Verificacao se e nula ou tamanho diferente
@@ -155,7 +191,11 @@ public class InputUtils {
         while(true) {
             try {
                 System.out.print(mensagem);
-                return Integer.parseInt(sc.nextLine());
+                String entrada = sc.nextLine().trim();
+                if (entrada.isEmpty()) {
+                    return 0; // Retorna 0 se o usuario nao digitar nada
+                }
+                return Integer.parseInt(entrada);
             } catch (NumberFormatException e) {
                 System.out.println("Entrada invalida. Por favor, digite um numero inteiro.");
             }
@@ -170,6 +210,54 @@ public class InputUtils {
             } catch (NumberFormatException e) {
                 System.out.println("Entrada invalida. Por favor, digite um numero valido.");
             }
+        }
+    }
+
+    // Versao para permitir campo vazio
+    public static String lerDataOpcional(Scanner sc, String mensagem) {
+        while (true) {
+            System.out.print(mensagem);
+            String entrada = sc.nextLine().trim();
+            if (entrada.isEmpty()) {
+                return ""; // Retorna string vazia se o usuario nao digitar nada
+            }
+            if (!entrada.matches("\\d{2}/\\d{2}/\\d{4}") || !entrada.matches("\\d{2}.\\d{2}.\\d{4}")) { // Verifica se a entrada tem o formato DD/MM/AAAA
+                System.out.println("Entrada invalida. A data deve estar no formato DD/MM/AAAA.");
+                continue;
+            }
+            return entrada;
+        }
+    }
+
+    // Versao para permitir campo vazio
+    public static String lerTelefoneOpcional(Scanner sc, String mensagem) {
+        while (true) {
+            System.out.print(mensagem);
+            String entrada = sc.nextLine().trim();
+            if (entrada.isEmpty()) {
+                return ""; // Retorna string vazia se o usuario nao digitar nada
+            }
+            if (!entrada.matches("\\d{10,11}")) {
+                System.out.println("Entrada invalida. O numero de telefone deve conter entre 10 e 11 numeros.");
+                continue;
+            }
+            return entrada;
+        }
+    }
+
+    // Versao para permitir campo vazio
+    public static String lerEmailOpcional(Scanner sc, String mensagem) {
+        while (true) {
+            System.out.print(mensagem);
+            String entrada = sc.nextLine().trim();
+            if (entrada.isEmpty()) {
+                return ""; // Retorna string vazia se o usuario nao digitar nada
+            }
+            if (!entrada.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+                System.out.println("Entrada invalida. Por favor, digite um email valido.");
+                continue;
+            }
+            return entrada;
         }
     }
 }

@@ -79,8 +79,6 @@ public class ServicoMenu {
         String nomeServico = InputUtils.lerString(sc, "| Nome do Servico: ");
         String descricao = InputUtils.lerString(sc, "| Descricao do Servico: ");
         String data = InputUtils.lerData(sc, "| Data Agendada (DD/MM/AAAA): ");
-        data = data.replaceAll("[^0-9]", ""); // Remove tudo que nao for numero
-
         double valor = InputUtils.lerDouble(sc, "| Valor do Servico: R$ ");
 
         System.out.println("| Clientes disponiveis ----------------|");
@@ -254,8 +252,7 @@ public class ServicoMenu {
         }
 
         System.out.println("| Data atual: " + InputUtils.formatarData(servico.getData()));
-        String data = InputUtils.lerStringOpcional(sc, "| Nova data (ENTER para manter): ");
-        data = data.replaceAll("[^0-9]", ""); // Remove tudo que nao for numero
+        String data = InputUtils.lerDataOpcional(sc, "| Nova data (ENTER para manter): ");
         if (!data.isEmpty()) {
             servico.setData(data);
         }
@@ -275,11 +272,13 @@ public class ServicoMenu {
         int statusInput = InputUtils.lerIntOpcional(sc, "| Informe o numero do status (ENTER para manter): ");
 
         // Verificacao para colocar os status, e proibir o status 1 - ATIVO
-        if (statusInput > 1 && statusInput <= Status.values().length) {
-            Status status = Status.values()[statusInput];
-            servico.setStatus(status);
-        } else if (statusInput != 0) {
-            System.out.println("| Status invalido. Mantendo status atual. |");
+        if(statusInput != 0) {
+            if (statusInput > 1 && statusInput <= 4) {
+                Status status = Status.values()[statusInput];
+                servico.setStatus(status);
+            } else {
+                System.out.println("| Status invalido. Mantendo status atual. |");
+            }
         }
 
         // Edita o objeto funcionario utilizando o funcionarioService, e mostra mensagem de sucesso

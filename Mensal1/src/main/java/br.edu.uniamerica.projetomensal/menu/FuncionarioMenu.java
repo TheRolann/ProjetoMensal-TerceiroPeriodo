@@ -68,8 +68,8 @@ public class FuncionarioMenu {
         // Utilizando a Classe InputUtils para ler os dados do funcionario com validacao
         String nome = InputUtils.lerString(sc,"| Nome: ");
         String cpf = InputUtils.lerDocumento(sc,"| CPF: ");
-        String telefone = InputUtils.lerSomenteNumeros(sc,"| Telefone: ");
-        String email = InputUtils.lerString(sc,"| Email: ");
+        String telefone = InputUtils.lerTelefone(sc,"| Telefone: ");
+        String email = InputUtils.lerEmail(sc,"| Email: ");
         double salario = InputUtils.lerDouble(sc,"| Salario: R$ ");
 
         System.out.println("| Cargo:");
@@ -91,7 +91,7 @@ public class FuncionarioMenu {
         Status status; // Cria uma variavel do tipo Status para receber o valor do Enum
         // Valida se o numero do status esta dentro do range permitido, se nao estiver define como ATIVO por padrao
         if (statusInput > 2 || statusInput < 1) {
-            System.out.println("| Status inválido. Definindo como ATIVO.");
+            System.out.println("| Status invalido. Definindo como ATIVO.");
             status = Status.ATIVO;
         } else {
             // Mesmo processo do cargo, converte o numero para o valor do Enum correspondente
@@ -237,20 +237,19 @@ public class FuncionarioMenu {
         }
 
         System.out.println("| Telefone atual: " + funcionario.getTelefone());
-        String telefone = InputUtils.lerStringOpcional(sc,"| Novo telefone (ENTER p/ manter): ");
-        telefone = telefone.replaceAll("[^0-9]", ""); // Remove tudo que nao for numero
+        String telefone = InputUtils.lerTelefoneOpcional(sc,"| Novo telefone (ENTER p/ manter): ");
         if(!telefone.isEmpty()) {
             funcionario.setTelefone(telefone);
         }
 
         System.out.println("| Email atual: " + funcionario.getEmail());
-        String email = InputUtils.lerStringOpcional(sc,"| Novo email (ENTER p/ manter): ");
+        String email = InputUtils.lerEmailOpcional(sc,"| Novo email (ENTER p/ manter): ");
         if(!email.isEmpty()) {
             funcionario.setEmail(email);
         }
 
         System.out.println("| Salario atual: R$ " + funcionario.getSalario());
-        double salario = InputUtils.lerDouble(sc,"| Novo salario (0 p/ manter): ");
+        double salario = InputUtils.lerDoubleOpcional(sc,"| Novo salario (0 p/ manter): ");
 
         if(salario > 0){
             funcionario.setSalario(salario);
@@ -262,11 +261,14 @@ public class FuncionarioMenu {
 
         // Verifica se o numero do cargo esta dentro do range permitido, se nao estiver, a operacao sera cancelada
         // Caso contrario, converte o numero para o valor do Enum correspondente e atualiza o cargo do funcionario
-        if (cargoInput > 0 && cargoInput <= Status.values().length) {
-            Status status = Status.values()[cargoInput - 1];
-            funcionario.setStatus(status);
-        } else if (cargoInput != 0) {
-            System.out.println("| Cargo invalido. Mantendo cargo atual. |");
+
+        if(cargoInput != 0) {
+            if (cargoInput >= 1 && cargoInput <= 3) {
+                Status status = Status.values()[cargoInput - 1];
+                funcionario.setStatus(status);
+            } else {
+                System.out.println("| Cargo invalido. Mantendo cargo atual. |");
+            }
         }
 
         System.out.println("| Status atual: " + funcionario.getStatus());
@@ -274,11 +276,13 @@ public class FuncionarioMenu {
         int statusInput = InputUtils.lerIntOpcional(sc,"| Informe o numero do status (ENTER para manter): ");
 
         // Mesmo caso do cargo, mas faz a validacao para o status, para nao permitir numeros fora do range
-        if (statusInput > 0 && statusInput <= Status.values().length) {
-            Status status = Status.values()[statusInput - 1];
-            funcionario.setStatus(status);
-        } else if (statusInput != 0) {
-            System.out.println("| Status invalido. Mantendo status atual. |");
+        if (statusInput != 0) {
+            if (statusInput >= 1 && statusInput <= 2) {
+                Status status = Status.values()[statusInput - 1];
+                funcionario.setStatus(status);
+            } else {
+                System.out.println("| Status invalido. Mantendo status atual. |");
+            }
         }
 
         // Edita o objeto funcionario utilizando o funcionarioService, que atualiza os dados do funcionario na lista

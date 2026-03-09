@@ -67,15 +67,22 @@ public class ClienteMenu {
         String nomeEmpresa = InputUtils.lerString(sc, "| Nome da Empresa/Cliente: ");
         String documento = InputUtils.lerDocumento(sc, "| Documento (CPF/CNPJ): ");
         String endereco = InputUtils.lerString(sc, "| Endereco: ");
-        String telefone = InputUtils.lerSomenteNumeros(sc, "| Telefone: ");
-        String email = InputUtils.lerString(sc, "| Email: ");
+        String telefone = InputUtils.lerTelefone(sc, "| Telefone: ");
+        String email = InputUtils.lerEmail(sc, "| Email: ");
 
         System.out.print("| Status\n| 1 - ATIVO\n| 2 - INATIVO\n| Informe o numero do status: ");
         int statusInput = InputUtils.lerInt(sc, "");
 
         // Transforma o Enum Status a partir do numero informado pelo usuario, como uma lista de opcoes
         // ex: [ATIVO, INATIVO, AGENDADO, EM_ANDAMENTO, CONCLUIDO]
-        Status status = Status.values()[statusInput - 1];
+        Status status;
+        if (statusInput > 2 || statusInput < 1) {
+            System.out.println("| Status invalido. Definindo como ATIVO.");
+            status = Status.ATIVO;
+        } else {
+            // Mesmo processo do cargo, converte o numero para o valor do Enum correspondente
+            status = Status.values()[statusInput - 1];
+        }
 
         // Criando o objeto cliente e cadastrando utilizando o clienteService, que gera o ID automaticamente
         Cliente cliente = clienteService.cadastrarCliente(nomeEmpresa, documento, endereco, telefone, email, status);
@@ -215,28 +222,30 @@ public class ClienteMenu {
         }
 
         System.out.println("| Telefone atual: " + cliente.getTelefone());
-        String telefone = InputUtils.lerStringOpcional(sc, "| Novo telefone (ENTER para manter): ");
-        telefone = telefone.replaceAll("[^0-9]", ""); // Remove tudo que nao for numero
+        String telefone = InputUtils.lerTelefoneOpcional(sc, "| Novo telefone (ENTER para manter): ");
         if (!telefone.isEmpty()) {
             cliente.setTelefone(telefone);
         }
 
         System.out.println("| Email atual: " + cliente.getEmail());
-        String email = InputUtils.lerStringOpcional(sc, "| Novo e-mail (ENTER para manter): ");
+        String email = InputUtils.lerEmailOpcional(sc, "| Novo e-mail (ENTER para manter): ");
         if (!email.isEmpty()) {
             cliente.setEmail(email);
         }
 
         System.out.println("| Status atual: " + cliente.getStatus());
-        System.out.print("| Novo status\n| 1 - ATIVO\n| 2 - INATIVO)\n");
+        System.out.print("| Novo status\n| 1 - ATIVO\n| 2 - INATIVO\n");
         int statusInput = InputUtils.lerIntOpcional(sc, "| Informe o numero do status (ENTER para manter): ");
 
         // Verificacao para colocar apenas os status ATIVO e INATIVO, para nao acessar outros status do enum
-        if (statusInput > 0 && statusInput <= Status.values().length) {
-            Status status = Status.values()[statusInput - 1];
-            cliente.setStatus(status);
-        } else if (statusInput != 0) {
-            System.out.println("| Status invalido. Mantendo status atual. |");
+
+        if (statusInput != 0) {
+            if (statusInput >= 1 && statusInput <= 2) {
+                Status status = Status.values()[statusInput - 1];
+                cliente.setStatus(status);
+            } else {
+                System.out.println("| Status invalido. Mantendo status atual. |");
+            }
         }
 
         // Edita o objeto cliente utilizando o clienteService, e mostra mensagem de sucesso
