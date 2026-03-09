@@ -97,6 +97,17 @@ Exemplo:
 
 ---
 
+### 📁 utilidades (util)
+
+Contém classe utilitaria, para validações de entradas e formatações das mesmas.
+
+Exemplo:
+
+* Menu Servico
+* Menu Relatorios
+
+---
+
 # 🧠 Conceitos Aplicados
 
 * Programação Orientada a Objetos
