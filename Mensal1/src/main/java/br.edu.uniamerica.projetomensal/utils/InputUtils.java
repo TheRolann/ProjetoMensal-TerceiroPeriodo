@@ -164,7 +164,7 @@ public class InputUtils {
 
     // Metodo para formatar a data, como no sistema a data e salvo sequencial, DDMMYYYY, esse metodo formata com /
     public static String formatarData(String data) {
-        if (data == null || data.length() != 8) { // Verificacao se e nula ou tamanho diferente
+        if (data == null || data.length() != 10) { // Verificacao se e nula ou tamanho diferente
             throw new IllegalArgumentException("Data deve conter exatamente 8 caracteres no formato DDMMYYYY.");
         }
         // substring faz a separacao da string, pegando os caracteres correspondentes a dia, mes e ano

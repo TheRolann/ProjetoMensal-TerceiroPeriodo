@@ -30,6 +30,11 @@ public class RelatorioServico {
         // Loop para percorrer os servicos cadastrados e calcular os totais, alem de identificar o servico mais lucrativo
         for (Servico s : servicoService.listar()) {
 
+            // Verificacao se for inativo, ignora o calculo do relatorio
+            if(s.getStatus() == Status.INATIVO) {
+                continue;
+            }
+
             // Somatorio do valor total previsto, independente do status do servico
             totalGeral = totalGeral + s.getValor();
 

@@ -40,10 +40,10 @@ public class RelatorioFuncionario {
         System.out.println("|----------------------------------------|");
         System.out.printf("| Funcionarios: %d", totalFuncionarios);
         System.out.printf("\n| Gerentes: %d    ", totalGerentes);
-        System.out.printf("\n| Devs: %d        ", totalDevs);
+        System.out.printf("\n| Devs: %d        \n", totalDevs);
         System.out.println("|----------------------------------------|");
         System.out.printf("| Total de funcionarios: %d ", total);
-        System.out.printf("\n| Total de salarios a pagar: R$ %.2f", totalSalarios);
-        System.out.println("|----------------------------------------|");
+        System.out.printf("\n| Total de salarios a pagar: R$ %.2f\n", totalSalarios);
+        System.out.println("\n|----------------------------------------|");
     }
 }

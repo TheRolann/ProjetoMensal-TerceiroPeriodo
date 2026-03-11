@@ -67,7 +67,7 @@ public class FuncionarioMenu {
 
         // Utilizando a Classe InputUtils para ler os dados do funcionario com validacao
         String nome = InputUtils.lerString(sc,"| Nome: ");
-        String cpf = InputUtils.lerDocumento(sc,"| CPF: ");
+        String cpf = InputUtils.lerDocumento(sc,"| CPF/CNPJ: ");
         String telefone = InputUtils.lerTelefone(sc,"| Telefone: ");
         String email = InputUtils.lerEmail(sc,"| Email: ");
         double salario = InputUtils.lerDouble(sc,"| Salario: R$ ");
